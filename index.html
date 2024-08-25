@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Chatroom</title>
+</head>
+<body>
+    <h1>Encrypted Chatroom</h1>
+    <textarea id="chat" readonly></textarea><br>
+    <input type="text" id="message" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+    
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
+    <script>
+        const serverUrl = '/.netlify/functions/chat';
+
+        function encryptMessage(message, key) {
+            return CryptoJS.AES.encrypt(message, key).toString();
+        }
+
+        function decryptMessage(encryptedMessage, key) {
+            const bytes = CryptoJS.AES.decrypt(encryptedMessage, key);
+            return bytes.toString(CryptoJS.enc.Utf8);
+        }
+
+        async function sendMessage() {
+            const message = document.getElementById('message').value;
+            const encryptedMessage = encryptMessage(message, 'your-secret-key'); // Use a secure key management system in production
+
+            await fetch(serverUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: encryptedMessage }),
+            });
+
+            document.getElementById('message').value = '';
+        }
+
+        async function fetchMessages() {
+            const response = await fetch(serverUrl);
+            const data = await response.json();
+            const chat = document.getElementById('chat');
+            chat.value = '';
+            data.messages.forEach(msg => {
+                chat.value += decryptMessage(msg, 'your-secret-key') + '\n';
+            });
+        }
+
+        setInterval(fetchMessages, 2000);
+    </script>
+</body>
+</html>
