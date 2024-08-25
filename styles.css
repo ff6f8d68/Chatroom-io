@@ -72,11 +72,13 @@ h1 {
     padding: 10px;
 }
 
+/* Input Area Styling */
 #inputArea {
     display: flex;
     border-top: 1px solid #444;
     background-color: #202225;
     padding: 10px;
+    align-items: flex-start;
 }
 
 #message {
@@ -87,6 +89,8 @@ h1 {
     background-color: #2f3136;
     color: #dcddde;
     font-size: 14px;
+    min-height: 80px; /* Makes the input area taller */
+    resize: vertical; /* Allows the user to resize the input area vertically */
 }
 
 button {
