@@ -1,5 +1,3 @@
-const serverUrl = '/.netlify/functions/chat';
-
 document.addEventListener('DOMContentLoaded', () => {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const authContainer = document.getElementById('authContainer');
@@ -11,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatContainer = document.getElementById('chatContainer');
     const profilePic = document.getElementById('profilePic');
     const usernameDisplay = document.getElementById('username');
+    const messageInput = document.getElementById('message');
 
     const darkModeKey = 'darkMode';
     const userKey = 'user';
@@ -53,8 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('signUpPassword').value;
         const profilePicInput = document.getElementById('profilePicInput').files[0];
 
-        // Here you would typically handle uploading the profile picture and storing user data
-        // This is a placeholder for demonstration purposes
+        // Placeholder for file upload and user data storage
         localStorage.setItem(userKey, JSON.stringify({ username, profilePic: '' }));
         document.getElementById('signUpForm').reset();
         authForms.classList.add('hidden');
@@ -69,8 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = document.getElementById('signInUsername').value;
         const password = document.getElementById('signInPassword').value;
 
-        // Here you would typically verify the user credentials
-        // This is a placeholder for demonstration purposes
+        // Placeholder for user authentication
         const user = JSON.parse(localStorage.getItem(userKey));
         if (user && user.username === username) {
             authForms.classList.add('hidden');
@@ -95,14 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = JSON.parse(localStorage.getItem(userKey));
         if (user) {
             usernameDisplay.textContent = user.username;
-            // Set profile picture URL here if available
             profilePic.src = user.profilePic || 'default-profile-pic.png';
         }
     }
 
     // Fetch messages
     async function fetchMessages() {
-        const response = await fetch(serverUrl);
+        const response = await fetch('/.netlify/functions/chat');
         const data = await response.json();
         const chat = document.getElementById('chat');
         chat.value = '';
@@ -123,9 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function sendMessage() {
         const message = document.getElementById('message').value;
-        const encryptedMessage = encryptMessage(message, 'your-secret-key'); // Use a secure key management system in production
+        const encryptedMessage = encryptMessage(message, 'your-secret-key');
 
-        await fetch(serverUrl, {
+        await fetch('/.netlify/functions/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -135,6 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('message').value = '';
     }
+
+    // Handle Enter key press
+    messageInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
 
     setInterval(fetchMessages, 2000);
 
