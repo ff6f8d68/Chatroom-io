@@ -160,3 +160,27 @@ button:active {
         width: 100%;
     }
 }
+/* Chat Messages Styling */
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    color: #dcddde;
+}
+
+.chat-profile-pic {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.chat-username {
+    font-weight: bold;
+    color: #7289da;
+}
+
+.chat-text {
+    word-break: break-word;
+}
