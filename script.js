@@ -119,7 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function sendMessage() {
         const message = document.getElementById('message').value;
-        const encryptedMessage = encryptMessage(message, 'your-secret-key');
+        const user = JSON.parse(localStorage.getItem(userKey));
+        const formattedMessage = `<img src="${user.profilePic || 'default-profile-pic.png'}" alt="Profile Pic" class="chat-profile-pic"> <strong>${user.username}:</strong> ${message}`;
+        const encryptedMessage = encryptMessage(formattedMessage, 'your-secret-key');
 
         await fetch('/.netlify/functions/chat', {
             method: 'POST',
